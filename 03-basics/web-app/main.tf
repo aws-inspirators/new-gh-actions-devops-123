@@ -215,7 +215,7 @@ resource "aws_db_instance" "db_instance" {
   engine                     = "postgres"
   engine_version             = "14"
   instance_class             = "db.t4g.large"
-  name                       = "mydb"
+  name                       = "diboDB"
   username                   = "foo"
   password                   = "foobarbaz"
   skip_final_snapshot        = true
