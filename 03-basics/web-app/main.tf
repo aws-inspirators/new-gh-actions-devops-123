@@ -1,14 +1,16 @@
+# Assumes s3 bucket and dynamo DB table already set up
+# See /code/03-basics/aws-backend
 terraform {
-  # Assumes s3 bucket and dynamo DB table already set up
-  # See /code/03-basics/aws-backend
   backend "s3" {
-    bucket         = "devops-directive-tf-state"
-    key            = "03-basics/web-app/terraform.tfstate"
+    bucket         = "dibo-directive-tf-state"
+    key            = "web-app/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-state-locking"
     encrypt        = true
   }
+}
 
+terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -186,21 +188,21 @@ resource "aws_lb" "load_balancer" {
 
 }
 
-resource "aws_route53_zone" "primary" {
-  name = "devopsdeployed.com"
-}
+# resource "aws_route53_zone" "primary" {
+#   name = "devopsdeployed.com"
+# }
 
-resource "aws_route53_record" "root" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "devopsdeployed.com"
-  type    = "A"
+# resource "aws_route53_record" "root" {
+#   zone_id = aws_route53_zone.primary.zone_id
+#   name    = "devopsdeployed.com"
+#   type    = "A"
 
-  alias {
-    name                   = aws_lb.load_balancer.dns_name
-    zone_id                = aws_lb.load_balancer.zone_id
-    evaluate_target_health = true
-  }
-}
+#   alias {
+#     name                   = aws_lb.load_balancer.dns_name
+#     zone_id                = aws_lb.load_balancer.zone_id
+#     evaluate_target_health = true
+#   }
+# }
 
 resource "aws_db_instance" "db_instance" {
   allocated_storage = 20
@@ -211,8 +213,8 @@ resource "aws_db_instance" "db_instance" {
   auto_minor_version_upgrade = true
   storage_type               = "standard"
   engine                     = "postgres"
-  engine_version             = "12"
-  instance_class             = "db.t2.micro"
+  engine_version             = "14"
+  instance_class             = "db.t4g.large"
   name                       = "mydb"
   username                   = "foo"
   password                   = "foobarbaz"
